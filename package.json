@@ -9,6 +9,7 @@
         "Source/Events/Web",
         "Source/Portal/Backend",
         "Source/Portal/Web",
+        "Source/LandingPage/Web",
         "Source/Shared/Backend",
         "Source/Shared/Components",
         "Source/Shared/DependencyInversion",

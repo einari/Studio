@@ -1,0 +1,57 @@
+// Copyright (c) Dolittle. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+@import './globals.scss';
+@import "~@shared/styles/acrylic.scss";
+
+body {
+    background: #333 url($app-background-image) center/cover;
+    background-attachment: fixed;
+    height: 100%;
+    margin: 0;
+}
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+.application {
+    @extend .acrylic;
+    position: absolute;
+    display: flex;
+    top: $app-header-height;
+    flex: 1;
+    flex-direction: row;
+    margin-top: 2rem;
+    margin-left: 2rem;
+    margin-right: 2rem;
+    margin-bottom: 2rem;
+    padding: 0;
+
+    width: calc(100% - 16rem);
+    height: calc(100% - 9.5rem);
+
+
+    .main {
+        margin: 0;
+        width: 100%;
+
+        .content {
+            position: relative;
+            width: calc(100%);
+            height: calc(100%);
+            margin: 0;
+            padding: 0;
+
+            .spinner {
+                position: fixed;
+                left: 50%;
+                top: 50%;
+                margin-top: -4rem;
+                margin-left: -4rem;
+            }
+        }
+    }
+}
+
