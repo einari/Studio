@@ -56,6 +56,9 @@ export const Layout = withViewModel(LayoutViewModel, ({ viewModel }) => {
                                 <Route path="/events">
                                     <ContentFrame src="/_/events" load={contentLoading} loaded={contentLoaded} />
                                 </Route>
+                                <Route path="/landscaper">
+                                    <ContentFrame src="/_/landscaper" load={contentLoading} loaded={contentLoaded} />
+                                </Route>
                             </Switch>
                         </div>
                     </div>
