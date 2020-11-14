@@ -14,5 +14,9 @@
     "81cad113-a001-45dc-86cb-7b1e725ae25e": {
         "host": "runtime-events",
         "port": "50052"
+    },
+    "15824a53-31bd-4634-8892-2331a8460a3b": {
+        "host": "runtime-landscaper",
+        "port": "50052"
     }
 }
