@@ -1,0 +1,17 @@
+{
+    "name": "landscaper.model",
+    "version": "1.0.0",
+    "description": "",
+    "private": true,
+    "author": "Dolittle",
+    "license": "MIT",
+    "dependencies": {
+        "@fluidframework/aqueduct": "^0.28.7",
+        "@fluidframework/map": "^0.28.7",
+        "konva": "^7.1.6",
+        "react-konva": "^16.13.0-6"
+    },
+    "devDependencies": {
+        "@shared/webpack": "1.0.0"
+    }
+}

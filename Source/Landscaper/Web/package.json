@@ -11,6 +11,8 @@
     "author": "Dolittle",
     "license": "MIT",
     "dependencies": {
+        "konva": "^7.1.6",
+        "react-konva": "^16.13.0-6"
     },
     "devDependencies": {
         "@shared/webpack": "1.0.0"

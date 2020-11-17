@@ -8,6 +8,7 @@
         "Source/Events/Backend",
         "Source/Events/Web",
         "Source/Landscaper/Backend",
+        "Source/Landscaper/Model",
         "Source/Landscaper/Web",
         "Source/Portal/Backend",
         "Source/Portal/Web",
