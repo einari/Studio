@@ -7,7 +7,7 @@ import swaggerUi from 'swagger-ui-express';
 
 import { getSchema } from './schema';
 import { RegisterRoutes } from './routes';
-import { RegisterEventTypes } from './applications/EventTypes';
+import { RegisterEventTypes } from './RegisterEventTypes';
 import { EventContext, PartitionId } from '@dolittle/sdk.events';
 import { PartitionedFilterResult } from '@dolittle/sdk.events.filtering';
 
@@ -38,9 +38,14 @@ import { PartitionedFilterResult } from '@dolittle/sdk.events.filtering';
 
             _.withFilters(filterBuilder =>
                 filterBuilder
-                    .createPublicFilter('2c087657-b318-40b1-ae92-a400de44e507', fb =>
-                        fb.handle((event: any, context: EventContext) => {
-                            return new PartitionedFilterResult(true, PartitionId.unspecified);
+                    .createPublicFilter(
+                        'b628cd98-9d0d-4dbc-b4dd-56e89d7aa272',
+                        fb => fb.handle(
+                            (event: any, context: EventContext) => {
+                            return new PartitionedFilterResult(
+                                true,
+                                PartitionId.unspecified
+                            );
                         })
                     )
             );

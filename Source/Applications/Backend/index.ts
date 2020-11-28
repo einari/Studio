@@ -3,8 +3,13 @@
 
 import path from 'path';
 import { startBackend } from '@shared/backend';
-
 import { getSchema } from './schema';
+import { PartitionId } from '@dolittle/sdk.events';
+
+import tenant from '@shared/backend/Tenant';
+import Microservices from '@shared/backend/Microservices';
+
+import { projectFromEventsToReadModels } from './applications';
 
 (async () => {
     const schema = await getSchema();
@@ -17,9 +22,24 @@ import { getSchema } from './schema';
         dolittleRuntimePort: 50057,
         graphQLSchema: schema,
         defaultDatabaseName: 'applications',
+        defaultEventStoreDatabaseName: 'event_store_applications',
         expressCallback: _ => {
         },
-        dolittleCallback: _ => {
+            dolittleCallback: _ => {
+            projectFromEventsToReadModels(_);
+
+            _.withEventHorizons(eh => {
+                eh.forTenant(tenant, ts => {
+                    ts.fromProducerMicroservice(Microservices.k8s)
+                        .fromProducerTenant(tenant)
+                        .fromProducerStream('b628cd98-9d0d-4dbc-b4dd-56e89d7aa272')
+                        .fromProducerPartition(PartitionId.unspecified.value)
+                        .toScope('da92a933-a4c5-478d-a0c4-49aeef72f6d5')
+                        .onSuccess((t, s, sr) => console.log('Subscription: Success'))
+                        .onFailure((t, s, sr) => console.log(`Subscription: Failed - ${sr.failure?.reason}`))
+                        .onCompleted((t, s, sr) => console.log(`Subscription: Completed`));
+                });
+            });
         }
     });
 })();

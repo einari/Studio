@@ -14,16 +14,23 @@ import { IEventTypes } from './IEventTypes';
 
 export type DolittleClientBuilderCallback = (clientBuilder: ClientBuilder) => void;
 
-export async function initialize(port: number, callback?: DolittleClientBuilderCallback): Promise<Client> {
+export async function initialize(microserviceId: string, port: number, defaultDatabaseName: string, defaultEventStoreDatabaseName: string, callback?: DolittleClientBuilderCallback): Promise<Client> {
+    const host = process.env.DATABASE_HOST || 'localhost';
+    const databaseConnectionString = `mongodb://${host}:27017/`;
+    const databaseName = process.env.DATABASE_NAME || defaultDatabaseName;
+
     let runtimePort = port;
     if (process.env.DOLITTLE_RUNTIME_PORT) {
         runtimePort = parseInt(process.env.DOLITTLE_RUNTIME_PORT);
     }
     const clientBuilder = Client
-        .forMicroservice('acfda18a-8ad7-42fe-b363-8c6c289cb0ff')
+        .forMicroservice(microserviceId)
         .withLogging(logger as Logger)
         .withContainer(containerInstance)
-        .withRuntimeOn('localhost', runtimePort);
+        .withRuntimeOn('localhost', runtimePort)
+        .withProjections(p => p.storeInMongo(databaseConnectionString, databaseName))
+        .withProjectionIntermediates(p => p.storeInMongo(databaseConnectionString, defaultEventStoreDatabaseName))
+    ;
 
     if (callback) callback(clientBuilder);
 
