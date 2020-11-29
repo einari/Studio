@@ -28,5 +28,7 @@
         "ext": "ts"
     },
     "dependencies": {
+        "cors": "2.8.5",        
+        "tinylicious": "0.2.3810"
     }
 }

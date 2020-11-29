@@ -25,7 +25,7 @@ import { projectFromEventsToReadModels } from './applications';
         defaultEventStoreDatabaseName: 'event_store_applications',
         expressCallback: _ => {
         },
-            dolittleCallback: _ => {
+        dolittleCallback: _ => {
             projectFromEventsToReadModels(_);
 
             _.withEventHorizons(eh => {

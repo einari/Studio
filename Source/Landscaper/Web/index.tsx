@@ -10,6 +10,12 @@ import { Bindings as PortalBindings } from '@shared/portal';
 import { Bindings as PlatformBindings } from '@shared/platform';
 import { Stage, Layer, Star, Text } from 'react-konva';
 
+import { getDefaultObjectFromContainer } from '@fluidframework/aqueduct';
+import { getTinyliciousContainer } from './FluidContainer';
+
+import { StarTrackerContainerRuntimeFactory } from './containerCode';
+import { IStarTracker } from './dataObject';
+
 import '@shared/styles/theme';
 import './index.scss';
 
@@ -23,8 +29,21 @@ function generateShapes() {
     }));
 }
 
-
 const INITIAL_STATE = generateShapes();
+
+let starTracker: IStarTracker;
+let movedCallback: Function;
+
+const documentId = '681cf9ac-7dce-4544-adc8-3e19d121de07';
+
+(async () => {
+    const container = await getTinyliciousContainer(documentId, StarTrackerContainerRuntimeFactory, false);
+    starTracker = await getDefaultObjectFromContainer<IStarTracker>(container);
+
+    starTracker.on('starMoved', () => {
+        if (movedCallback) movedCallback();
+    });
+})();
 
 export default function App() {
     MVVMBindings.initialize();
@@ -32,22 +51,9 @@ export default function App() {
     PlatformBindings.initialize();
 
     const [stars, setStars] = React.useState(INITIAL_STATE);
-
-    const handleDragStart = (e) => {
-        const id = e.target.id();
-        setStars(
-            stars.map((star) => {
-                console.log(star.x);
-                return {
-                    ...star,
-                    isDragging: star.id === id,
-                };
-            })
-        );
-    };
-
-    const handleDragEnd = (e) => {
-        console.log(`${e.target.x()} - ${e.target.y()}`);
+    movedCallback = () => {
+        stars[0].x = starTracker.x;
+        stars[0].y = starTracker.y;
         setStars(
             stars.map((star) => {
 
@@ -57,6 +63,38 @@ export default function App() {
                 };
             })
         );
+    };
+
+    const handleDragStart = (e) => {
+        const id = e.target.id();
+        setStars(
+            stars.map((star) => {
+                //console.log(star.x);
+                return {
+                    ...star,
+                    isDragging: star.id === id,
+                };
+            })
+        );
+    };
+
+    const handleDragEnd = (e) => {
+        //console.log(`${e.target.x()} - ${e.target.y()}`);
+        starTracker.moved(e.target.x(), e.target.y());
+        setStars(
+            stars.map((star) => {
+
+                return {
+                    ...star,
+                    isDragging: false,
+                };
+            })
+        );
+    };
+
+    const handleDragMove = (e) => {
+        starTracker.moved(e.target.x(), e.target.y());
+        //console.log(`${e.target.x()} - ${e.target.y()}`);
     };
 
     return (
@@ -83,6 +121,7 @@ export default function App() {
                             shadowOffsetY={star.isDragging ? 10 : 5}
                             scaleX={star.isDragging ? 1.2 : 1}
                             scaleY={star.isDragging ? 1.2 : 1}
+                            onDragMove={handleDragMove}
                             onDragStart={handleDragStart}
                             onDragEnd={handleDragEnd}
                         />
@@ -93,7 +132,9 @@ export default function App() {
     );
 }
 
+
 ReactDOM.render(
     <App />,
     document.getElementById('root')
 );
+
