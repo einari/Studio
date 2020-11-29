@@ -7,37 +7,53 @@ import compression from 'compression';
 import { GraphQLSchema } from 'graphql';
 import morgan from 'morgan';
 import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
+import http from 'http';
 
-export let app: Express;
-export type ExpressConfigCallback = (app: Express) => void;
+export type ExpressConfigCallback = (app: Express) => http.Server | undefined;
 
 export async function initialize(prefix: string, publicPath: string, port: number, schema: GraphQLSchema, configCallback?: ExpressConfigCallback) {
-    app = express();
+    const requestSizeLimit = '50mb';
+    const expressPort = process.env.PORT || port;
+    let httpServer: http.Server | undefined;
+
+    const app = express();
+    app.set('port', expressPort);
     app.use(compression());
+    app.use(cookieParser());
+    app.use(bodyParser.json({ limit: requestSizeLimit }));
     app.use(
         bodyParser.urlencoded({
-            extended: true
+            limit: requestSizeLimit,
+            extended: false
         })
     );
-    app.use(bodyParser.json());
 
     const server = new ApolloServer({
         schema
     });
     server.applyMiddleware({ app, path: `${prefix}/graphql` });
 
-    if (configCallback) configCallback(app);
+    if (configCallback) {
+        httpServer = configCallback(app);
+    }
 
     app.use(morgan('tiny'));
     app.use(prefix, express.static(publicPath));
+
     app.use((req, res) => {
         res.sendFile(`${publicPath}/index.html`);
     });
 
-    const expressPort = process.env.PORT || port;
-    app.listen({ port: expressPort, hostname: '0.0.0.0' }, () => {
-        console.log(`Server is running on port ${expressPort}.`);
-    });
+    if (httpServer) {
+        httpServer.listen({ port: expressPort, hostname: '0.0.0.0' });
+        httpServer.on('error', (error) => console.log(`Error '${error}'`));
+        httpServer.on('listening', () => console.log(`Server listening on '${expressPort}'`));
+    } else {
+        app.listen({ port: expressPort, hostname: '0.0.0.0' });
+        app.on('error', (error) => console.log(`Error '${error}'`));
+        app.on('listening', () => console.log(`Server listening on '${expressPort}'`));
+    }
 
     return app;
 }
