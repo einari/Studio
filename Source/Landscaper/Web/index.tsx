@@ -10,7 +10,7 @@ import { Bindings as PortalBindings } from '@shared/portal';
 import { Bindings as PlatformBindings } from '@shared/platform';
 import { Stage, Layer, Star, Text } from 'react-konva';
 
-import { getDefaultObjectFromContainer } from '@fluidframework/aqueduct';
+import { getDefaultObjectFromContainer, getObjectWithIdFromContainer } from '@fluidframework/aqueduct';
 import { getTinyliciousContainer } from './FluidContainer';
 
 import { StarTrackerContainerRuntimeFactory } from './containerCode';
@@ -38,11 +38,12 @@ const documentId = '681cf9ac-7dce-4544-adc8-3e19d121de07';
 
 (async () => {
     const container = await getTinyliciousContainer(documentId, StarTrackerContainerRuntimeFactory, false);
-    starTracker = await getDefaultObjectFromContainer<IStarTracker>(container);
 
+    starTracker = await getDefaultObjectFromContainer<IStarTracker>(container);
     starTracker.on('starMoved', () => {
         if (movedCallback) movedCallback();
     });
+
 })();
 
 export default function App() {
