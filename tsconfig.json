@@ -38,7 +38,6 @@
         "preserveConstEnums": true,
         "newLine": "lf",
         "disableSourceOfProjectReferenceRedirect": true //https://github.com/microsoft/TypeScript/issues/34677
-
      },
 
      "exclude": [
