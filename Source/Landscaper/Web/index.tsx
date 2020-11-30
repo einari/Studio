@@ -3,8 +3,9 @@
 
 import 'reflect-metadata';
 
-import React from 'react';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
+
 import { Bindings as MVVMBindings } from '@shared/mvvm';
 import { Bindings as PortalBindings } from '@shared/portal';
 import { Bindings as PlatformBindings } from '@shared/platform';
@@ -18,6 +19,8 @@ import { IStarTracker } from './dataObject';
 
 import '@shared/styles/theme';
 import './index.scss';
+import { CreateMenu } from './CreateMenu';
+import { KonvaEventObject } from 'konva/types/Node';
 
 function generateShapes() {
     return [...Array(1)].map((_, i) => ({
@@ -98,10 +101,18 @@ export default function App() {
         //console.log(`${e.target.x()} - ${e.target.y()}`);
     };
 
+    const [menuXPosition, setMenuXPosition] = useState(100);
+    const [menuYPosition, setMenuYPosition] = useState(100);
+
+    const mouseMove = (e: KonvaEventObject<MouseEvent>) => {
+    };
+
+
     return (
         <>
-            <Stage width={window.innerWidth} height={window.innerHeight}>
-                <Layer>
+            <Stage width={window.innerWidth} height={window.innerHeight} onMouseMove={mouseMove}>
+                <Layer >
+                    <CreateMenu x={menuXPosition} y={menuYPosition} />
                     {stars.map((star) => (
                         <Star
                             key={star.id}

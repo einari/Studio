@@ -13,6 +13,7 @@
     "dependencies": {
         "konva": "7.2.0",
         "react-konva": "17.0.0-0",
+        "react-spring": "8.0.27",
         "@fluidframework/aqueduct": "0.26.0",
         "@fluidframework/get-tinylicious-container": "0.26.0",
         "@fluidframework/map": "0.26.0"
