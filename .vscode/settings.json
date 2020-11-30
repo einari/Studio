@@ -14,6 +14,7 @@
         "MUUID",
         "dependencyinversion",
         "fluidframework",
+        "konva",
         "mvvm",
         "tinylicious",
         "tsoa",
